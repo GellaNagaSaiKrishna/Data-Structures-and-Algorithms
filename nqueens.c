@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>
-#include <time.h>  // ✅ Include for measuring time
+#include <time.h> 
 
 void swap(size_t *a, size_t *b) {
     size_t temp = *a;
@@ -69,12 +69,11 @@ int main() {
     printf("Enter value of n: ");
     scanf("%zu", &n);
 
-    // ✅ Start timing
     clock_t start = clock();
 
     size_t solutions = nqueens(n);
 
-    // ✅ End timing
+
     clock_t end = clock();
     double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
 
@@ -83,3 +82,4 @@ int main() {
 
     return 0;
 }
+
