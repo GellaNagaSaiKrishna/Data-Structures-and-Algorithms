@@ -45,19 +45,29 @@ bool up(struct node*p){
     return true;
 }
 
-bool down(struct node*p){
-   size_t start_col = (p->last == -1 ? 0 : (size_t)p->last + 1);
-    for(size_t i = start_col; i < p->n; i++){
-        p->last = i;
-        if(ok(p)){ // check immediately
+bool down(struct node *p) {
+    bool *used = malloc(p->n * sizeof(bool));
+    assert(used);
+
+    for (size_t i = 0; i < p->n; ++i)
+        used[i] = false;
+
+    for (size_t i = 0; i < p->k; ++i)
+        used[p->queens[i]] = true;
+
+    for (size_t i = p->last + 1; i < p->n; ++i)
+        if (!used[i]) {
             p->queens[p->k] = i;
-            p->k++;
-            p->last = -1;
+            ++(p->k);
+            p->last = -1; // fixed spacing
+            free(used);
             return true;
         }
-    }
+
+    free(used);
     return false;
 }
+
 
 size_t nqueens(size_t n){
     struct node p;
@@ -90,4 +100,5 @@ int main(){
     size_t result = nqueens(n);
     printf("Number of solutions for %zu queens: %zu\n", n, result);
     return 0;
+
 }
