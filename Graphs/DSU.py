@@ -1,5 +1,7 @@
 class Solution:
     def countComponents(self, n: int, edges: List[List[int]]) -> int:
+        # we could also write as
+    #   def countComponents(self,n,edges):
         par = [i for i in range(n)]
         rank = [1] * n
 
