@@ -4,70 +4,68 @@
 
 // A structure to hold the permutation and auxiliary data for the Gray ordering.
 typedef struct {
-    size_t *p;
-    int *d; // Direction array: 1 for right, -1 for left
+    size_t *p;   // permutation array
+    int *d;      // direction array: -1 for left, +1 for right
     size_t n;
     bool has_next;
 } GrayPermutation;
 
 // Initializes the Gray ordering generator with the first permutation.
-// The first permutation is [0, 1, 2, ..., n-1].
 void first_gray(GrayPermutation *gp, size_t n) {
     gp->n = n;
     gp->p = malloc(n * sizeof(size_t));
     gp->d = malloc(n * sizeof(int));
 
-    if (!gp->p || !gp->d) {
+    if (n > 0 && (!gp->p || !gp->d)) {
         fprintf(stderr, "Memory allocation failed\n");
         exit(1);
     }
 
     for (size_t i = 0; i < n; ++i) {
         gp->p[i] = i;
-        gp->d[i] = -1; // Initial direction is left for all elements
+        gp->d[i] = -1; // Initial direction is left
     }
-    gp->has_next = true;
+    gp->has_next = (n > 0);
 }
 
 // Generates the next Gray permutation.
-// Returns true if a next permutation was found, false otherwise.
+// Returns true if a next permutation exists.
 bool next_gray(GrayPermutation *gp) {
-    if (!gp->has_next) {
-        return false;
-    }
+    if (!gp->has_next) return false;
 
-    // 1. Find the largest mobile element k. A mobile element is one whose direction arrow points to a smaller adjacent element.
-    ssize_t mobile_index = -1;
+    // 1. Find the largest mobile element
+    long mobile_index = -1;
     size_t mobile_value = 0;
 
-    for (ssize_t i = 0; i < gp->n; ++i) {
-        ssize_t adjacent_index = i + gp->d[i];
-        if (adjacent_index >= 0 && adjacent_index < gp->n) {
-            if (gp->p[i] > gp->p[adjacent_index] && gp->p[i] > mobile_value) {
+    for (long i = 0; i < (long)gp->n; ++i) {
+        long adj = i + gp->d[i];
+        if (adj >= 0 && adj < (long)gp->n) {
+            if (gp->p[i] > gp->p[adj] && gp->p[i] > mobile_value) {
                 mobile_value = gp->p[i];
                 mobile_index = i;
             }
         }
     }
 
-    // 2. If no mobile element exists, we are at the last permutation.
+    // 2. If no mobile element, we are done
     if (mobile_index == -1) {
         gp->has_next = false;
         return false;
     }
 
-    // 3. Swap the mobile element k with its adjacent element in the direction of its arrow.
-    ssize_t swap_index = mobile_index + gp->d[mobile_index];
+    // 3. Swap mobile with adjacent in its direction
+    long swap_index = mobile_index + gp->d[mobile_index];
+
     size_t temp_val = gp->p[mobile_index];
     gp->p[mobile_index] = gp->p[swap_index];
     gp->p[swap_index] = temp_val;
-    
+
     int temp_dir = gp->d[mobile_index];
     gp->d[mobile_index] = gp->d[swap_index];
     gp->d[swap_index] = temp_dir;
 
-    // 4. Reverse the direction of all elements larger than the mobile element.
-    for (ssize_t i = 0; i < gp->n; ++i) {
+    // 4. Reverse direction of all elements larger than the mobile
+    for (long i = 0; i < (long)gp->n; ++i) {
         if (gp->p[i] > mobile_value) {
             gp->d[i] *= -1;
         }
@@ -76,10 +74,10 @@ bool next_gray(GrayPermutation *gp) {
     return true;
 }
 
-// Prints a permutation.
+// Print a permutation
 void print_permutation(size_t *p, size_t n) {
     for (size_t i = 0; i < n; ++i) {
-        printf("%zu", p[i]);
+        printf("%zu ", p[i]);
     }
     printf("\n");
 }
@@ -92,13 +90,14 @@ int main() {
     GrayPermutation gp;
     first_gray(&gp, n);
 
-    // Print all permutations in the Gray ordering.
-    print_permutation(gp.p, n);
-    while (next_gray(&gp)) {
+    // Print all permutations
+    if (gp.has_next) {
         print_permutation(gp.p, n);
+        while (next_gray(&gp)) {
+            print_permutation(gp.p, n);
+        }
     }
-    
-    // Cleanup allocated memory.
+
     free(gp.p);
     free(gp.d);
 
