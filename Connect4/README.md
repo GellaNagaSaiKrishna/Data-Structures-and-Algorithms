@@ -17,5 +17,4 @@ This program implements optimal Connect-4 on a 5-column by 4-row board. The game
 - The first player, if optimal, cannot lose.
 - The code always plays optimally.
 
-### Example Usage
 
