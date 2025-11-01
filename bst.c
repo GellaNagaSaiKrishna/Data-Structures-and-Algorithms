@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define unreachable() abort()
+
 struct bst {
 	int key;
 	struct bst *left, *right;
