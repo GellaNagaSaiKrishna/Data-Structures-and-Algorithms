@@ -238,11 +238,11 @@ int main()
 	return 0;
 }
 
-/*Sample input
+/*Sample input (Here we use 1 based indexing)
 6
 9
-0 1 4
-0 2 4
+6 1 4
+6 2 4
 1 2 2
 2 3 3
 2 5 2
